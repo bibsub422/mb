@@ -29,9 +29,9 @@
             right: 0;
             bottom: 0;
             background: inherit;
-            filter: blur(8px); /* Blur the background */
+            filter: blur(8px);
             z-index: -1;
-            opacity: 0.8; /* Make it a little transparent */
+            opacity: 0.8;
         }
 
         h1 {
@@ -39,34 +39,69 @@
             color: #ff6347;
             z-index: 2;
         }
+
         p {
             font-size: 1.5em;
             color: #4682b4;
             z-index: 2;
         }
+
         .countdown {
             font-size: 2.5em;
             font-weight: bold;
             color: #2e8b57;
             z-index: 2;
         }
+
         .quote {
             font-size: 2em;
             margin-top: 20px;
             color: #8b008b;
             z-index: 2;
         }
+
         .party {
             display: none;
         }
+
         .party.visible {
             display: block;
             animation: pop 2s ease-out;
             z-index: 2;
         }
+
+        .flashing-text {
+            display: none;
+            font-size: 3em;
+            color: #ff4500;
+            animation: flash 1s infinite;
+        }
+
+        .emojis {
+            display: none;
+        }
+
+        .emojis.visible {
+            display: block;
+            font-size: 2em;
+            animation: emojiPop 1s ease-in-out infinite;
+        }
+
         @keyframes pop {
             0% {transform: scale(0);}
             100% {transform: scale(1);}
+        }
+
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes emojiPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
@@ -79,12 +114,17 @@
         🎉🎉 Happy Birthday, Manish! 🎉🎉
     </div>
 
-    <h2>Time Since ६ असोज २०६०</h2>
+    <h2 id="sinceBirthHeader">Time Since ६ असोज २०६०</h2>
     <div id="sinceBirthCountdown" class="countdown"></div>
+
+    <div id="flashingText" class="flashing-text">Happy Birthday, Manish! 🎂🎉</div>
+    <div id="birthdayEmojis" class="emojis">🎉🥳🎂🎊🎁🎈</div>
 
     <script>
         const birthday = new Date('2024-09-22T00:00:00+05:45').getTime(); // Set for 22nd September 2024, 12 AM, Nepal Time
-        const sinceBirth = new Date('2003-09-23T00:00:00+05:45').getTime(); // Manish's birth date
+        const birthDate = new Date('2003-09-23T00:00:00+05:45').getTime(); // Manish's birth date
+        const birthdayStart = new Date('2024-09-23T00:00:00+05:45').getTime(); // 12AM on 23rd Sept 2024
+        const birthdayEnd = new Date('2024-09-23T00:01:00+05:45').getTime(); // 12:01AM on 23rd Sept 2024
 
         function updateCountdown() {
             const now = new Date().getTime();
@@ -107,13 +147,26 @@
             }
 
             // Countdown Since Birth
-            let sinceBirthTime = now - sinceBirth;
-            const birthDays = Math.floor(sinceBirthTime / (1000 * 60 * 60 * 24));
-            const birthHours = Math.floor((sinceBirthTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const birthMinutes = Math.floor((sinceBirthTime % (1000 * 60 * 60)) / (1000 * 60));
-            const birthSeconds = Math.floor((sinceBirthTime % (1000 * 60)) / 1000);
+            if (now >= birthdayStart && now < birthdayEnd) {
+                // Remove "Since Birth Countdown" and add flashing text + emojis
+                document.getElementById('sinceBirthHeader').style.display = "none";
+                document.getElementById('sinceBirthCountdown').style.display = "none";
+                document.getElementById('flashingText').style.display = "block";
+                document.getElementById('birthdayEmojis').classList.add('visible');
+            } else if (now >= birthdayEnd) {
+                // Keep only flashing birthday text after 12:01 AM
+                document.getElementById('birthdayEmojis').style.display = "none";
+                document.getElementById('flashingText').style.display = "block";
+            } else {
+                // Regular birth countdown
+                let sinceBirthTime = now - birthDate;
+                const birthDays = Math.floor(sinceBirthTime / (1000 * 60 * 60 * 24));
+                const birthHours = Math.floor((sinceBirthTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const birthMinutes = Math.floor((sinceBirthTime % (1000 * 60 * 60)) / (1000 * 60));
+                const birthSeconds = Math.floor((sinceBirthTime % (1000 * 60)) / 1000);
 
-            document.getElementById('sinceBirthCountdown').innerHTML = `Manish is ${birthDays} days, ${birthHours} hours, ${birthMinutes} minutes, and ${birthSeconds} seconds old.`;
+                document.getElementById('sinceBirthCountdown').innerHTML = `Manish is ${birthDays} days, ${birthHours} hours, ${birthMinutes} minutes, and ${birthSeconds} seconds old.`;
+            }
         }
 
         setInterval(updateCountdown, 1);
