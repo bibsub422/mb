@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manish's Birthday Countdown</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            text-align: center;
+            background: url('bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Blurred background effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            filter: blur(8px); /* Blur the background */
+            z-index: -1;
+            opacity: 0.8; /* Make it a little transparent */
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #ff6347;
+            z-index: 2;
+        }
+        p {
+            font-size: 1.5em;
+            color: #4682b4;
+            z-index: 2;
+        }
+        .countdown {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2e8b57;
+            z-index: 2;
+        }
+        .quote {
+            font-size: 2em;
+            margin-top: 20px;
+            color: #8b008b;
+            z-index: 2;
+        }
+        .party {
+            display: none;
+        }
+        .party.visible {
+            display: block;
+            animation: pop 2s ease-out;
+            z-index: 2;
+        }
+        @keyframes pop {
+            0% {transform: scale(0);}
+            100% {transform: scale(1);}
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Manish's Birthday Countdown</h1>
+    <div id="countdown" class="countdown"></div>
+    <p id="message" class="quote"></p>
+    <div id="party" class="party">
+        🎉🎉 Happy Birthday, Manish! 🎉🎉
+    </div>
+
+    <h2>Time Since ६ असोज २०६०</h2>
+    <div id="sinceBirthCountdown" class="countdown"></div>
+
+    <script>
+        const birthday = new Date('2024-09-22T00:00:00+05:45').getTime(); // Set for 22nd September 2024, 12 AM, Nepal Time
+        const sinceBirth = new Date('2003-09-23T00:00:00+05:45').getTime(); // Manish's birth date
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+
+            // Birthday Countdown
+            let distance = birthday - now;
+            if (distance >= 0) {
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                const milliseconds = Math.floor(distance % 1000);
+
+                document.getElementById('countdown').innerHTML = `Manish's birthday in ${hours}h ${minutes}m ${seconds}s ${milliseconds}ms`;
+
+                if (distance <= 0) {
+                    document.getElementById('countdown').innerHTML = "Today is Manish's Birthday!";
+                    document.getElementById('party').classList.add('visible');
+                    document.getElementById('message').innerHTML = "Hope you're enjoying your day!";
+                }
+            }
+
+            // Countdown Since Birth
+            let sinceBirthTime = now - sinceBirth;
+            const birthDays = Math.floor(sinceBirthTime / (1000 * 60 * 60 * 24));
+            const birthHours = Math.floor((sinceBirthTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const birthMinutes = Math.floor((sinceBirthTime % (1000 * 60 * 60)) / (1000 * 60));
+            const birthSeconds = Math.floor((sinceBirthTime % (1000 * 60)) / 1000);
+
+            document.getElementById('sinceBirthCountdown').innerHTML = `Manish is ${birthDays} days, ${birthHours} hours, ${birthMinutes} minutes, and ${birthSeconds} seconds old.`;
+        }
+
+        setInterval(updateCountdown, 1);
+    </script>
+
+</body>
+</html>
